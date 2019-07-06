@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MVVM</string>
+    <string name="dialog_names_title">Who\'s playing?</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_close">Close</string>
+    <string name="text_vs">VS</string>
+    <string name="hint_player_x">Player X</string>
+    <string name="hint_player_o">Player O</string>
+    <string name="dialog_winner_title">%s won! Play again?</string>
+    <string name="dialog_draw_title">Draw!</string>
 </resources>

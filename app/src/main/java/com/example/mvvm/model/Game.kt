@@ -2,22 +2,15 @@ package com.example.mvvm.model
 
 import androidx.lifecycle.MutableLiveData
 
-object Game {
-    var player1: Player? = null
-    var player2: Player? = null
-    var currentPlayer: Player? = null
-    var cells = Array(3) { Array(3) { Cell(null) } }
+class Game(playerX: String, playerO: String) {
+    private val playerX: Player? = Player(playerX, "X")
+    private val playerO: Player? = Player(playerO, "O")
+    var currentPlayer: Player? = this.playerX
+    val cells = Array(3) { Array(3) { Cell(null) } }
     val winner = MutableLiveData<Player>()
 
-    fun start(playerOne: String, playerTwo: String) {
-        player1 = Player(playerOne, "x")
-        player2 = Player(playerTwo, "o")
-        currentPlayer = player1
-        cells.flatten().forEach { it.player = null }
-    }
-
     fun switchPlayer() {
-        currentPlayer = if (currentPlayer == player1) player2 else player1
+        currentPlayer = if (currentPlayer == playerX) playerO else playerX
     }
 
     fun hasEnded() = when {
@@ -35,17 +28,23 @@ object Game {
     private fun isBoardFull() = cells.flatten().none { it.isEmpty() }
 
     private fun hasHorizontalSolution() =
-        cells.any { it.all { it.player == player1 } || it.all { it.player == player2 } }
+            cells.any { it.all { it.player == playerX } || it.all { it.player == playerO } }
 
     private fun hasVerticalSolution(): Boolean {
         (0..2).forEach {
-            if (cells[0][it].player == cells[1][it].player && cells[1][it].player == cells[2][it].player)
+            val firstCell = cells[0][it]
+            if (!firstCell.isEmpty()
+                    && firstCell.player == cells[1][it].player
+                    && firstCell.player == cells[2][it].player)
                 return true
         }
         return false
     }
 
-    private fun hasDiagonalSolution() =
-        (cells[0][0].player == cells[1][1].player && cells[1][1].player == cells[2][2].player
-                || cells[0][2].player == cells[1][1].player && cells[1][1].player == cells[2][0].player)
+    private fun hasDiagonalSolution(): Boolean {
+        val centerCell = cells[1][1]
+        return !centerCell.isEmpty() &&
+                ((centerCell.player == cells[0][0].player && centerCell.player == cells[2][2].player) ||
+                        (centerCell.player == cells[0][2].player && centerCell.player == cells[2][0].player))
+    }
 }
